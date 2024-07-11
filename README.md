@@ -1,79 +1,100 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## ※ Native Module
 
-# Getting Started
+&nbsp;- `Android` / `iOS` 별도로 셋팅!
+<br>
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+<img src="https://img.shields.io/badge/Android- ?style=&logo=android&logoColor=white" />
 
-## Step 1: Start the Metro Server
+### 1. 프로젝트 설정
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+- **프로젝트의 `build.gradle` 파일 수정 (`:project`)**
 
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+```java
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 23
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
+        **kotlinVersion = "1.9.22"**
+    }
+    ...
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion") // <- 추가
+    }
+}
 ```
 
-## Step 2: Start your Application
+- **앱의 `build.gradle` 파일 수정 (`:app`)**
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```java
+apply plugin: "com.android.application"
+apply plugin: "com.facebook.react"
+apply plugin: "org.jetbrains.kotlin.android" // <- 추가
 ```
 
-### For iOS
+<br>
 
-```bash
-# using npm
-npm run ios
+### 2. 네이티브 모듈 정의하기
 
-# OR using Yarn
-yarn ios
+- **새로운 Kotlin Class 파일 생성 (경로: `app/java/com/project`)**
+**[ 작성 예시 파일: `CalculatorModule.kt` ]**
+
+<br>
+
+### 3. React Native 패키지 정의하기
+
+- **새로운 Kotlin Class 파일 생성 (경로: `app/java/com/project`) 후 작성**
+**[ 작성 예시 파일: `CalculatorPackage.kt` ]**
+
+
+
+<br>
+
+### 4. 패키지 등록
+
+- **`MainApplication.kt` 파일 수정 (경로: `app/java/com/project`)**
+
+```kotlin
+import com.facebook.react.ReactPackage
+import com.facebook.react.shell.MainReactPackage
+import com.facebook.react.PackageList
+
+class MainApplication : Application(), ReactApplication {
+
+    override fun getPackages(): List<ReactPackage> =
+        PackageList(this).packages.apply {
+            // Packages that cannot be autolinked yet can be added manually here, for example:
+            // add(MyReactNativePackage())
+            add(CalculatorPackage()) // <- 추가
+        }
+}
+```
+<br>
+
+<img src="https://img.shields.io/badge/iOS-gray?style=&logo=apple&logoColor=white" />
+
+### 1. 네이티브 모듈 정의하기
+
+- **새로운 Swift 파일 생성 (경로: Project폴더 내에 생성)**
+- **생성 시 뜨는 창에서 Create Bridging Header를 클릭하여 Bridging Header를 만들고 아래와 같이 작성
+(React Package를 사용할 수 있게 해준다.)**
+
+**[ 예시: `Calculator-Bridging-Header.h` ]**
+
+```swift
+#import <React/RCTBridgeModule.h> 
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+- **생성한 Swift 파일에 네이티브 모듈 정의**
+**[ 작성 예시 파일: `CalculatorModule.swift` ]**
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+### 2. Swift 모듈 브리징 설정
 
-## Step 3: Modifying your App
+- **새로운 Objecive-C File 생성**
+**[ 작성 예시 파일: `CalculatorModuleBridge.m` ]**
 
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+<br>
